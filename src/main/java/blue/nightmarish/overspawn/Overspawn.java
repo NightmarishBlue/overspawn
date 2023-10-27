@@ -67,13 +67,13 @@ public class Overspawn
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) throws IllegalAccessException {
-        // reflect the field. gonna have to do something about the fieldname.
+        // reflect the field. gonna have to do something about the field name.
         Field creatureField = ObfuscationReflectionHelper.findField(MobCategory.class, "f_21586_"); // this field is the "max" field of MobCategory
         int globalCap = OverspawnCommonConfig.DEFAULT_CREATURE_SPAWN_CAP.get();
         int worldCap = OverspawnWorldConfig.CREATURE_SPAWN_CAP.get();
         if (worldCap == 0) worldCap = globalCap; // if the world has no cap configured, set it to the common
         creatureField.set(MobCategory.CREATURE, worldCap);
-        LOGGER.debug("the cap is " + worldCap);
+        LOGGER.info("the creature spawn cap is " + worldCap);
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
