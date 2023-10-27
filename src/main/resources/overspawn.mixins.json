@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "blue.nightmarish.overspawn.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8.0",
+  "mixins": [
+    "world.entity.MobCategoryChangeCreature"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
