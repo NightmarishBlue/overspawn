@@ -1,14 +1,13 @@
 package blue.nightmarish.overspawn;
 
-import blue.nightmarish.overspawn.config.OverspawnConfig;
+import blue.nightmarish.overspawn.config.OverspawnCommonConfig;
+import blue.nightmarish.overspawn.config.OverspawnWorldConfig;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
@@ -61,7 +60,8 @@ public class Overspawn
         ITEMS.register(modEventBus);
 
         // Register the mod config
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, OverspawnConfig.SPEC, "overspawn.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, OverspawnCommonConfig.SPEC, MOD_ID + "-common.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, OverspawnWorldConfig.SPEC, MOD_ID + "-world.toml");
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -79,9 +79,12 @@ public class Overspawn
     public void onServerStarting(ServerStartingEvent event) throws IllegalAccessException {
         // reflect the field. gonna have to do something about the fieldname.
         Field creatureField = ObfuscationReflectionHelper.findField(MobCategory.class, "f_21586_");
-        creatureField.set(MobCategory.CREATURE, OverspawnConfig.CREATURE_SPAWN_CAP.get());
+        int globalCap = OverspawnCommonConfig.DEFAULT_CREATURE_SPAWN_CAP.get();
+        int worldCap = OverspawnWorldConfig.CREATURE_SPAWN_CAP.get();
+        if (worldCap == 0) worldCap = globalCap; // if the world has no cap configured, set it to the common
+        creatureField.set(MobCategory.CREATURE, worldCap);
         // Do something when the server starts
-//        LOGGER.info("HELLO from server starting");
+        LOGGER.debug("the cap is " + worldCap);
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

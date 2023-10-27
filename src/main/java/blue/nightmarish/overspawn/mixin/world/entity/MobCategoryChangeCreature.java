@@ -1,6 +1,5 @@
 package blue.nightmarish.overspawn.mixin.world.entity;
 
-import blue.nightmarish.overspawn.config.OverspawnConfig;
 import net.minecraft.world.entity.MobCategory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +19,7 @@ public abstract class MobCategoryChangeCreature {
     // we can do this if we want to change the value often. otherwise we can use ~reflection~
     @Inject(method = "getMaxInstancesPerChunk", cancellable = true, at = @At("HEAD"))
     void onGetMaxInstancesPerChunk(CallbackInfoReturnable<Integer> cir) {
-        //if (Objects.equals(this.name, "creature")) cir.setReturnValue(OverspawnConfig.CREATURE_SPAWN_CAP.get());
+        //if (Objects.equals(this.name, "creature")) cir.setReturnValue(OverspawnWorldConfig.CREATURE_SPAWN_CAP.get());
     }
 
     // remove the inherent persistence of all animals
