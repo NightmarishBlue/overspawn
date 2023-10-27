@@ -4,14 +4,9 @@ import blue.nightmarish.overspawn.config.OverspawnCommonConfig;
 import blue.nightmarish.overspawn.config.OverspawnWorldConfig;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -19,17 +14,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(Overspawn.MOD_ID)
 public class Overspawn
 {
@@ -78,12 +68,11 @@ public class Overspawn
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) throws IllegalAccessException {
         // reflect the field. gonna have to do something about the fieldname.
-        Field creatureField = ObfuscationReflectionHelper.findField(MobCategory.class, "f_21586_");
+        Field creatureField = ObfuscationReflectionHelper.findField(MobCategory.class, "f_21586_"); // this field is the "max" field of MobCategory
         int globalCap = OverspawnCommonConfig.DEFAULT_CREATURE_SPAWN_CAP.get();
         int worldCap = OverspawnWorldConfig.CREATURE_SPAWN_CAP.get();
         if (worldCap == 0) worldCap = globalCap; // if the world has no cap configured, set it to the common
         creatureField.set(MobCategory.CREATURE, worldCap);
-        // Do something when the server starts
         LOGGER.debug("the cap is " + worldCap);
     }
 
